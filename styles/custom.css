@@ -1,0 +1,17 @@
+.reveal .slides img.mx-auto{
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.reveal .list-none {
+    list-style-type: none;
+}
+
+figcaption{
+    position: relative;
+
+}
+
+#footer-left {
+    color:#268bd2;
+}

@@ -1,0 +1,659 @@
+<html>
+<head>
+    <meta charset="utf-8">
+
+    <title>E-Commerce challenges in 2020</title>
+
+    <meta name="description" content="A small overview about ecommerce systems and their tech stack">
+    <meta name="author" content="Kevin Krieger, Twitter:@kkrieger, kk@kkrieger.de">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="node_modules/reveal.js/css/reveal.css">
+    <!--<link rel="stylesheet" href="node_modules/reveal.js/css/theme/white.css">-->
+    <!-- -->
+    <link rel="stylesheet" href="node_modules/reveal.js/css/theme/solarized.css" id="theme"><!-- -->
+    <link rel="stylesheet" href="node_modules/reveal.js/lib/css/zenburn.css">
+    <link rel="stylesheet" href="node_modules/tailwindcss/dist/tailwind.css">
+    <link rel="stylesheet" href="node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="styles/custom.css">
+
+    <style>
+        .reveal img, .reveal video, .reveal iframe {
+            max-height: 80vh;
+        }
+    </style>
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section>
+            <h1>WebWorker #41</h1>
+            <img src="img/webworker_saar_highres_473945486.jpg" class="mx-auto"  style="height: 400px">
+            <h2>overview of e-commerce systems</h2>
+            <h2 class="hidden">challenges in e-commerce</h2>
+            <p>a really technical view</p>
+        </section>
+        <section>
+            <img src="img/kevinkrieger.jpg" class="w-64 h-64 rounded-full mx-auto">
+            <br>
+            <div>Kevin Krieger</div>
+            <br>
+            <div class="fragment">freelancer e-commerce</div>
+            <div class="fragment">open source contributor</div>
+            <div class="fragment">co-organizing <a href="https://webworker-saar.de/">WebWorker Saar</a></div>
+        </section>
+
+        <section>
+            <h2>agenda</h2>
+            <ul class="">
+                <li>overall view</li>
+                <li>technical view</li>
+                <li>example: M1 vs M2</li>
+                <li>overview shop systems</li>
+            </ul>
+
+        </section>
+
+        <section>
+            <section>
+                <h2>Online shop requirements</h2>
+                <ul class="">
+                    <li class="fragment">not only an online shop</li>
+                    <li class="fragment">Customer: "Shopping experience"</li>
+                    <li class="fragment">Merchants: Shop needs to fit in organisational setting</li>
+                    <li class="fragment">Merchants: Multichannel</li>
+                </ul>
+                <aside class="notes">
+                    There is more: like
+                    <ul>
+                        <li>User Experience/Customer Experience</li>
+                        <li>Product Experience (Augmented/Virtual Reality)</li>
+                        <li>Personalized content</li>
+                    </ul>
+                </aside>
+            </section>
+
+            <section>
+                <h3>solution(s):</h3>
+                <ul class="list-none">
+                    <li class="fragment">PIM <small>(product information system)</small></li>
+                    <li class="fragment">CMS <small>(content management system)</small></li>
+                    <li class="fragment">DAM <small>(digital assets management)</small></li>
+                    <li class="fragment">ERP <small>(enterprise resource planning)</small></li>
+                    <li class="fragment">CRM <small>(customer relationship management)</small></li>
+                    <li class="fragment">Shop <small></small></li>
+                    <li class="fragment">Marketplaces <small>(like Amazon & Ebay)</small></li>
+                    <li class="fragment">=> lot of APIs and integration</li>
+                </ul>
+            </section>
+        </section>
+
+        <section>
+            <section>
+                <h2>Separation of Concerns</h2>
+                <h4 class="text-2xl">From monolith to microservices</h4>
+                <figure>
+                    <img src="img/monolith_microservice.jpg" class="mx-auto" style="height: 400px">
+                    <figcaption>symbol: container</figcaption>
+                </figure>
+                <aside class="notes">
+                    Microservice advantages
+                    <ul>
+                        <li>scalable services</li>
+                        <li>replaceable services</li>
+                        <li>easier to build</li>
+                        <li>flexible development</li>
+                        <li>independent development of features</li>
+                    </ul>
+                </aside>
+            </section>
+            <section>
+                <h2>Separation of backend</h2>
+                <figure>
+                    <img src="img/app_diagram.jpg" class="mx-auto" >
+                    <figcaption>API first / "headless"</figcaption>
+                </figure>
+            </section>
+
+            <section>
+                <h2>Separate of frontend: (store-)front(-end)</h2>
+                <figure>
+                    <img src="img/m2_archi_diagram_desired-state.png" class="mx-auto">
+                    <figcaption>Desired M2 architecture</figcaption>
+                </figure>
+                <aside class="notes">
+                    <ul>
+                        <li>API first approach in development</li>
+                        <li>M2: oldschool SSR template with phtml-files</li>
+                        <li>M2: or PWA storefront</li>
+                        <li>Different storefronts available</li>
+                        <li>PWA as upcoming default store-frontend</li>
+                        <li>Proxy-Applications/Middleware</li>
+                    </ul>
+                </aside>
+            </section>
+
+            <section>
+                <h3>What does it mean to developers?</h3>
+
+                <div class="flex">
+                    <div class="fragment w-full  mb-8">
+                        <ul class="text-2xl w-1/2 center list-none" style="columns:3">
+                            <li>Apache / nginx</li>
+                            <li>MySQL</li>
+                            <li>PHP>7.2</li>
+                            <li>HTML5</li>
+                            <li>CSS3</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="flex">
+                    <div class="fragment fade-in-then-semi-out w-1/3">
+                        <h4>Magento 1</h4>
+                        <ul class="text-2xl w-1/3">
+                            <li>ZF 1 (parts)</li>
+                            <li>Protoype JS</li>
+                            <li>jQuery</li>
+                            <li>CSS</li>
+                            <li>phtml</li>
+                        </ul>
+                        <ul class="text-2xl w-1/3 align-top">
+                            <li>Modman</li>
+                            <li>Composer</li>
+                            <li>LESS/SASS</li>
+                        </ul>
+                    </div>
+                    <div class="fragment fade-in-then-semi-out w-1/3">
+                        <h4>Magento 2</h4>
+                        <ul class="text-2xl w-full" style="columns:2">
+                            <li class="font-semibold">Redis>5.0</li>
+                            <li class="font-semibold">Varnish>5.2</li>
+                            <li class="font-semibold">RabbitMQ>3.7</li>
+                            <li class="font-semibold">Composer</li>
+                            <li class="font-semibold">Symfony</li>
+                            <li>ZF 1 (parts)</li>
+                            <li class="font-semibold">ZF 2 (parts)</li>
+                            <li class="font-semibold">KnockoutJS</li>
+                            <li class="font-semibold">RequireJS</li>
+                            <li>jQuery</li>
+                            <li>JavaScript</li>
+                            <li class="font-semibold">LESS/SASS</li>
+                            <li class="font-semibold">CI/CD Pipeline</li>
+                            <li class="font-semibold">Coding Standards <br>(PSR-0/1/2/3/4)</li>
+                        </ul>
+                    </div>
+                    <div class="fragment w-1/3">
+                        <h4>
+                            Magento 2.3
+                        </h4>
+                        <ul class="text-2xl w-full" style="columns:2">
+                            <li class="font-semibold">PHP>7.3</li>
+                            <li>Redis>5.0</li>
+                            <li>Varnish>5.2</li>
+                            <li class="font-semibold">Elasticsearch</li>
+                            <li>RabbitMQ>3.7</li>
+                            <li>Composer</li>
+                            <li>Symfony</li>
+                            <li>ZF 1 (parts)</li>
+                            <li>ZF 2 (parts)</li>
+                            <li>KnockoutJS</li>
+                            <li>RequireJS</li>
+                            <li>jQuery</li>
+                            <li>JavaScript</li>
+                            <li>LESS/SASS</li>
+                            <li class="font-semibold">React (PWA Studio)</li>
+                            <li class="font-semibold">Redux</li>
+                            <li class="font-semibold">GraphQL</li>
+                            <li class="font-semibold">webpack</li>
+                            <li class="font-semibold">Peregrine</li>
+                            <li class="font-semibold">yarn</li>
+                            <li>CI/CD Pipeline</li>
+                            <li>Coding Standards <br>(PSR-0/1/2/3/4)</li>
+                        </ul>
+                    </div>
+                </div>
+                <aside class="notes">
+                    <p>let's compare Magento's technology stack over time </p>
+                    <ul>
+                        <li>ZF: Zend Framework</li>
+                        <li>Peregrine: React components library provided by the PWA Studio</li>
+                    </ul>
+                </aside>
+            </section>
+
+        </section>
+
+
+        <section>
+            <section>
+                <h3>Overview (germany)</h3>
+                <h5 class="text-2xl">Market share of e-commerce software providers in Germany as of September 2019</h5>
+                <figure>
+                    <img src="img/Screenshot_Statista_eCommerce.png" class="mx-auto"  style="height: 400px">
+                    <figcaption>Source: Statista</figcaption>
+                </figure>
+
+                <div class="text-2xl px-8 py-4">"websites using e-commerce technologies in Germany which used the .DE extension"                </div>
+
+            </section>
+            <section>
+
+                <h3>Disclaimer:</h3>
+                <ul>
+                    <li>consider community/free edition(s)</li>
+                    <li>some are hardly documented <span>(often best doc: composer.json)</span></li>
+                    <li>I am Magento dev</li>
+                    <li>opinions are mine</li>
+                </ul>
+            </section>
+
+            <section>
+                <h3>Zen Cart (v1.5.6)</h3>
+                <div class="flex">
+                    <div class="fragment w-full">
+                        <ul class="text-2xl center">
+                            <li>PHP > 5.6</li>
+                            <li>jQuery</li>
+                            <li>WTF! DevDocs</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex fragment mt-4 center">
+                    <div class="w-full">
+                        <a href="https://docs.zen-cart.com/dev/">See docs</a>
+                    </div>
+                </div>
+
+            </section>
+            <section>
+                <h3>Shopware</h3>
+                <div class="flex">
+                    <div class="fragment w-1/2">
+                        <h4>Shopware 5.6.x</h4>
+                        <ul class="text-2xl center">
+                            <li>PHP > 7.2</li>
+                            <li>Composer</li>
+                            <li>Elasticsearch</li>
+                            <li>ExtJs (Admin)</li>
+                            <li>Smarty-Templates (Storefront)</li>
+                        </ul>
+                    </div>
+
+                    <div class="fragment  w-1/2">
+                        <h4>Shopware 6.x</h4>
+                        <ul class="text-2xl center">
+                            <li>PHP > 7.2</li>
+                            <li>Composer</li>
+                            <li>Symfony</li>
+                            <li>API-First</li>
+                            <li>Node.js</li>
+                            <li>NPM</li>
+                            <li>Vue.js (Admin)</li>
+                            <li>Bootstrap</li>
+                            <li>SASS</li>
+                            <li>Twig (Storefront)</li>
+                            <li>In progress: Vue Storefront aka<br>Shopware PWA</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex fragment mt-4">
+                    <div class="w-1/2">
+                        <a href="https://developers.shopware.com/">See SW5 docs</a>
+                    </div>
+                    <div class="w-1/2">
+                        <a href="https://docs.shopware.com/de/shopware-platform--dev-de">See SW6 docs</a>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>WooCommerce</h3>
+                <div class="flex">
+                    <div class="fragment w-full">
+                        <ul class="text-2xl center">
+                            <li>Plugin WordPress</li>
+                            <li>PHP > 7.2</li>
+                            <li>flexible Theming</li>
+                            <li>HTML in PHP as Storefront</li>
+                            <li>Plain CSS</li>
+                            <li>REST API</li>
+                            <li>Good Docs</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex fragment mt-4 center">
+                    <div class="w-full">
+                        <a href="https://docs.woocommerce.com/">See docs</a>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>JTL-Shop 5(beta.1)</h3>
+                <div class="flex">
+                    <div class="fragment w-full">
+                        <h4></h4>
+                        <ul class="text-2xl center" style="columns:2">
+                            <li>PHP > 7.1</li>
+                            <li>Smarty 3 Templates</li>
+                            <li>Bootstrap 3</li>
+                            <li>LESS</li>
+                            <li>jQuery</li>
+                            <li>Redis</li>
+                            <li>Memcached</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex fragment mt-4 center">
+                    <div class="w-full">
+                        <a href="https://jtl-devguide.readthedocs.io/projects/jtl-shop/de/docs/index.html">See docs</a>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <h3>OXID eSales (6.5.0)</h3>
+                <div class="flex">
+                    <div class="fragment w-full">
+                        <h4></h4>
+                        <ul class="text-2xl center" style="columns:2">
+                            <li>composer</li>
+                            <li>PHP >7.1</li>
+                            <li>Smarty 2 Templates</li>
+                            <li>Symfony (partly)</li>
+                            <li>PSR-3</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex fragment mt-4 center">
+                    <div class="w-full">
+                        <a href="https://docs.oxid-esales.com/developer/en/6.1/index.html">See docs</a>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>PrestaShop (1.7.6.2)</h3>
+                <div class="flex">
+                    <div class="fragment w-full">
+                        <h4></h4>
+                        <ul class="text-2xl center" style="columns:2">
+                            <li>composer</li>
+                            <li>PHP >5.6</li>
+                            <li>Smarty 3 Templates (Storefront)</li>
+                            <li>Symfony (partly)</li>
+                            <li>twig (Admin)</li>
+                            <li>Bootstrap 4</li>
+                            <li>jQuery</li>
+                            <li>SASS</li>
+                            <li>webpack (assets bundler)</li>
+                            <li>npm</li>
+                            <li>node.js</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex fragment mt-4 center">
+                    <div class="w-full">
+                        <a href="http://doc.prestashop.com/display/PS17/PrestaShop+1.7+documentation">See docs</a>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>OpenCart (v3.0.3.2)</h3>
+                <div class="flex">
+                    <div class="fragment w-full">
+                        <h4></h4>
+                        <ul class="text-2xl center" style="columns:2">
+                            <li>composer</li>
+                            <li>PHP >5.4</li>
+                            <li>SCSS</li>
+
+                            <li>WTF! DevDocs</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex fragment mt-4 center">
+                    <div class="w-full">
+                        <a href="http://docs.opencart.com/en-gb/introduction/">See docs</a>
+                    </div>
+                </div>
+            </section>
+            <section>
+                <h3>xtCommerce (6.2.x)</h3>
+                <div class="flex">
+                    <div class="fragment w-full">
+                        <h4></h4>
+                        <ul class="text-2xl center" style="columns:2">
+                            <li>PHP >7.2/3/4</li>
+                            <li>Smarty 3 Templates</li>
+                            <li>LESS</li>
+                            <li>Ioncube Loader</li>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex fragment mt-4 center">
+                    <div class="w-full">
+                        <a href="https://xtcommerce.atlassian.net/wiki/spaces/MANUAL/overview">See docs</a>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>Sylius (v1.6.4)</h3>
+                <div class="flex">
+                    <div class="fragment w-full">
+                        <h4></h4>
+                        <ul class="text-2xl center" style="columns:2">
+                            <li>composer</li>
+                            <li>PHP >7.2</li>
+                            <li>good API coverage</li>
+                            <li>twig (Storefront + Admin)</li>
+                            <li>jQuery 3.4</li>
+                            <li>SASS</li>
+                            <li>node.js</li>
+                            <li>yarn</li>
+                            <li>rollup (bundler)</li>
+                            <li>gulp</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex fragment mt-4 center">
+                    <div class="w-full">
+                        <a href="https://docs.sylius.com/">See docs</a>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>Bagisto (v0.2.2)</h3>
+                <div class="flex">
+                    <div class="fragment w-full">
+                        <h4></h4>
+                        <ul class="text-2xl center" style="columns:2">
+                            <li>composer</li>
+                            <li>PHP >7.1</li>
+                            <li>build on laravel</li>
+                            <li>api first(?)</li>
+                            <li>node.js</li>
+                            <li>webpack</li>
+                            <li>bower</li>
+                            <li>Vue.js PWA as extension</li>
+                            <li>Bootstrap 4.0</li>
+                            <li>jQuery 3.2</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="flex fragment mt-4 center">
+                    <div class="w-full">
+                        <a href="https://devdocs.bagisto.com/">See docs</a>
+                    </div>
+                </div>
+            </section>
+
+
+            <section>
+                <h3>SAAS</h3>
+                <ul>
+                    <li><a href="https://www.plentymarkets.eu/preise/">Plentymarkets</a></li>
+                    <li><a href="https://www.gambio.de/preise">gambio</a></li>
+                    <li><a href="https://epages.com/de/preise/">epages</a></li>
+                    <li><a href="https://www.shopify.de/preise">Shopify</a></li>
+                    <li><a href="https://de.wix.com/mystunningwebsitesde/produkteonline-fixed">Wix.com</a></li>
+                    <li><a href="https://www.bigcommerce.com/essentials/pricing/">BigCommerce</a></li>
+                </ul>
+            </section>
+
+            <section>
+
+                <h3>enterprise</h3>
+                <ul>
+                    <li><a href="https://www.sap.com/germany/products/crm/e-commerce-platforms/features.html">Hybris</a>
+                    </li>
+                    <li><a href="https://spryker.com/?lang=de">Spryker</a></li>
+                    <li><a href="https://commercetools.com/de/">commercetools</a></li>
+                </ul>
+
+            </section>
+
+            <section>
+                <div class="flex">
+                    <div class="w-1/2"> <h3>ignored</h3>
+                        <ul>
+                            <li>osCommerce (PHP < 7)</li>
+                        </ul>
+                    </div>
+                    <div class="w-1/2">
+                        <h3>missing?</h3>
+                        <ul>
+                            <li>OroCommerce</li>
+                            <li>Odoo</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </section>
+
+
+            <section>
+                <h3>custom development</h3>
+                <div>
+                    How would you start developing an ecommerce software?
+                </div>
+            </section>
+        </section>
+
+        <section>
+            <h3>future challenges</h3>
+            <ul>
+                <li class="fragment">stronger separation of services</li>
+                <li class="fragment">lots of API <span class="fragment"> => more SAAS</span></li>
+                <li class="fragment">stronger separation of concern</li>
+                <li class="fragment">Backend: API only</li>
+                <li class="fragment">Frontend: PWA, Chatbots, Digital Assistants, AR/VR</li>
+                <li class="fragment">==> bigger teams</li>
+                <li class="fragment">higher initial costs for individual shops <span class="fragment text-sm align-top">opinion</span>
+                </li>
+            </ul>
+            <aside class="notes">
+                <div>separation of services: wishlist, cart, product</div>
+                <div>separation of concern: api development, microservices in different programming languages</div>
+                <div>dig. assitants like Amazon Echo, Ok Google, Siri, Cortana</div>
+                <div>Augmented Reality/Virtual Reality</div>
+            </aside>
+        </section>
+
+        <section>
+            <h2>Thank you</h2>
+            <h3 class="fragment">Questions?</h3>
+        </section>
+
+        <section>
+            <h4>Sources</h4>
+            <ul class="text-2xl">
+                <li><a href="#">See docs</a>-links</li>
+                <li><a href="https://media.t3n.de/redaktion/whitepaper/t3n_Marktueberblick-E-Commerce.pdf">t3n_Marktueberblick-E-Commerce.pdf</a>
+                </li>
+                <li>
+                    <a href="https://magento.com/sites/default/files/magento-open-source-software-maintenance-policy.pdf">magento-open-source-software-maintenance-policy.pdf</a>
+                </li>
+                <li><a href="https://magento.com/legal/terms/enterprise-agreement#support">enterprise-agreement</a></li>
+                <li><a href="https://devdocs.magento.com/guides/v2.3/architecture/tech-stack.html">Magento 2.3. Tech
+                    Stack</a></li>
+                <li><a href="https://magento.github.io/pwa-studio/technologies/theme-vs-storefront/">magento.github.io/pwa-studio/technologies/theme-vs-storefront/</a>
+                </li>
+                <li>
+                    <a href="https://www.statista.com/statistics/685489/e-commerce-software-provider-market-share-in-germany/">e-commerce-software-provider-market-share-in-germany</a>
+                </li>
+            </ul>
+            <h4>Images</h4>
+            <div class="flex w-8/12 mx-auto">
+                <div class="w-1/4">
+                    <a href="https://medium.com/tech-grupozap/o-que-aprendi-com-as-mudan%C3%A7as-de-uma-arquitetura-monol%C3%ADtica-para-micro-servi%C3%A7os-90109b57a7bc">
+                        <img src="img/monolith_microservice.jpg">
+                    </a>
+                </div>
+                <div class="w-1/4"><a href="https://devdocs.magento.com/common/images/archi_diagram_desired-state.png">
+                    <img src="img/m2_archi_diagram_desired-state.png">
+                </a></div>
+                <div class="w-1/4"><a href="http://blog.syncsort.com/wp-content/uploads/2016/10/app_diagram.jpg">
+                    <img src="img/app_diagram.jpg">
+                </a></div>
+                <div class="w-1/4"><a href="https://www.statista.com/statistics/685489/e-commerce-software-provider-market-share-in-germany/">
+                    <img src="img/Screenshot_Statista_eCommerce.png">
+
+                </a></div>
+            </div>
+        </section>
+
+    </div>
+</div>
+
+<div id="footer-left" class="bottom-0 left-0 absolute p-4">
+    <ul class="text-2xl ">
+        <li class="pb-2"><a href="https://twitter.com/kkrieger"><i class="fab fa-twitter pl-2 pr-2"></i>@kkrieger</a>
+        </li>
+        <li class="pb-2"><a href="https://github.com/kkrieger85/"><i class="fab fa-github pl-2 pr-2"></i>kkrieger85</a>
+        </li>
+    </ul>
+</div>
+
+<script src="node_modules/reveal.js/js/reveal.js"></script>
+<script>
+    Reveal.initialize({
+        width: "100%",
+        height: "100%",
+        margin: 0,
+        minScale: 1,
+        maxScale: 1,
+        pdfSeparateFragments: false,
+        progress: true,
+        slideNumber: 'c/t',
+        dependencies: [
+            // Syntax highlight for <code> elements
+            {
+                src: 'node_modules/reveal.js/plugin/highlight/highlight.js', async: true
+            },
+            {
+                src: 'node_modules/reveal.js/plugin/notes/notes.js', async: true
+            },
+
+        ],
+        hash: true,
+        fragmentInURL: true
+    });
+</script>
+</body>
+</html>
